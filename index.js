@@ -20,9 +20,10 @@ client.connect(err => {
   console.log("database connected");
 
   app.get('/', (req, res) => {
-    res.send("It' Working! Hello");
+    res.send("It' Working!");
   })
 
+  // Add information of users
   app.post('/addInfo', (req, res) => {
     const info = req.body;
     usersCollection.insertOne(info)
@@ -31,6 +32,7 @@ client.connect(err => {
       })
   })
 
+  // load all users data form database
   app.get('/users', (req, res) => {
     usersCollection.find({})
     .toArray( (err, result) => {
@@ -38,6 +40,7 @@ client.connect(err => {
     })
   })
 
+  // Load a user data by id from database
   app.post('/userData', (req, res) => {
     const id = req.body.id;
     usersCollection.find({_id: ObjectId(id)})
@@ -46,6 +49,7 @@ client.connect(err => {
       })
   })
 
+  // Load search data form database
   app.post('/searchUser', (req, res) => {
     const searchData = req.body.search;
     usersCollection.find({ $or: [{name: new RegExp(searchData, 'i')}, {locality: new RegExp(searchData, 'i')}] })
@@ -54,6 +58,7 @@ client.connect(err => {
         })
 })
 
+  // load reports data
   app.get('/reports', (req, res) => {
     let ageTotal = [];
 
@@ -69,6 +74,7 @@ client.connect(err => {
       ageTotal.push(age18);
     })
 
+
     usersCollection.find({ age: {$gt: '25'}})
     .toArray((err, documents) => {
       let age25 = documents.length;
@@ -79,6 +85,7 @@ client.connect(err => {
     
   })
 
+  // load locality and profession with group by from database
   app.get('/localityAndProfession', (req, res) => {
     let container = [];
     usersCollection.aggregate([

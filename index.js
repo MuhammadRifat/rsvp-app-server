@@ -78,7 +78,7 @@ client.connect(err => {
     
   })
 
-  app.get('/locality', (req, res) => {
+  app.get('/localityAndProfession', (req, res) => {
     let container = [];
     usersCollection.aggregate([
       {$group: {_id: "$locality", count: {$sum: 1}}}

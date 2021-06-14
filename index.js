@@ -54,6 +54,48 @@ client.connect(err => {
         })
 })
 
+  app.get('/reports', (req, res) => {
+    let ageTotal = [];
+
+    usersCollection.find({ $and: [{ age: {$gt: '12'}} , {age: {$lt: '18'}}]})
+    .toArray((err, documents) => {
+      let age13 = documents.length;
+      ageTotal.push(age13);
+    })
+
+    usersCollection.find({ $and: [{ age: {$gt: '17'}} , {age: {$lt: '26'}}]})
+    .toArray((err, documents) => {
+      let age18 = documents.length;
+      ageTotal.push(age18);
+    })
+
+    usersCollection.find({ $and: [{ age: {$gt: '25'}} , {age: {$lt: '100'}}]})
+    .toArray((err, documents) => {
+      let age25 = documents.length;
+      ageTotal.push(age25);
+      res.send({age13To17: ageTotal[0], age18To25: ageTotal[1], age25Plus: ageTotal[2]});
+    })
+    
+  })
+
+  app.get('/locality', (req, res) => {
+    let container = [];
+    usersCollection.aggregate([
+      {$group: {_id: "$locality", count: {$sum: 1}}}
+    ])
+    .toArray( (err, result) => {
+      container.push(result);
+    })
+
+    usersCollection.aggregate([
+      {$group: {_id: "$profession", count: {$sum: 1}}}
+    ])
+    .toArray( (err, result) => {
+      container.push(result);
+      res.send(container);
+    })
+  })
+
 });
 
 app.listen(process.env.PORT || port);

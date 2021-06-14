@@ -69,10 +69,11 @@ client.connect(err => {
       ageTotal.push(age18);
     })
 
-    usersCollection.find({ $and: [{ age: {$gt: '25'}} , {age: {$lt: '100'}}]})
+    usersCollection.find({ age: {$gt: '25'}})
     .toArray((err, documents) => {
       let age25 = documents.length;
       ageTotal.push(age25);
+      console.log(ageTotal);
       res.send({age13To17: ageTotal[0], age18To25: ageTotal[1], age25Plus: ageTotal[2]});
     })
     

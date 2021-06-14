@@ -38,12 +38,21 @@ client.connect(err => {
     })
   })
 
-  // app.post('/users', (req, res) => {
-  //   usersCollection.find({})
-  //     .toArray( (err, result) => {
-  //       console.log(result);
-  //     })
-  // })
+  app.post('/userData', (req, res) => {
+    const id = req.body.id;
+    usersCollection.find({_id: ObjectId(id)})
+      .toArray( (err, result) => {
+        res.send(result[0]);
+      })
+  })
+
+  app.post('/searchUser', (req, res) => {
+    const searchData = req.body.search;
+    usersCollection.find({ $or: [{name: new RegExp(searchData, 'i')}, {locality: new RegExp(searchData, 'i')}] })
+        .toArray((err, documents) => {
+            res.send(documents);
+        })
+})
 
 });
 
